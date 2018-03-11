@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <RadioGroup
+        android:id="@+id/rg_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#55cccccc"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_local_video"
+            style="@style/bottom_radio_button"
+            android:checked="true"
+            android:text="本地视频"/>
+
+        <RadioButton
+            android:id="@+id/rb_net_video"
+            style="@style/bottom_radio_button"
+            android:text="网络视频"/>
+
+        <RadioButton
+            android:id="@+id/rb_local_audio"
+            style="@style/bottom_radio_button"
+            android:text="本地音乐"/>
+
+        <RadioButton
+            android:id="@+id/rb_net_audio"
+            style="@style/bottom_radio_button"
+            android:text="网络音乐"/>
+    </RadioGroup>
+
+</LinearLayout>

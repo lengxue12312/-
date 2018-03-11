@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include layout="@layout/main_action_bar"/>
+
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/sr_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_audio"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </FrameLayout>
+
+    <com.tencent.smtt.sdk.WebView
+        android:id="@+id/wv_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_down"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#33000000"
+        android:visibility="gone">
+
+        <com.example.application.myapplication.view.MarqueeTextView
+            android:id="@+id/tv_file_name"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="13dp"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:singleLine="true"
+            android:text="文件名"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tv_file_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tv_file_name"
+            android:layout_below="@+id/tv_file_name"
+            android:text="当前大小/总大小"
+            android:textSize="13sp"/>
+
+        <ImageButton
+            android:id="@+id/ib_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="22dp"
+            android:layout_toStartOf="@+id/ib_pause"
+            android:background="@android:drawable/ic_media_play"/>
+
+        <ImageButton
+            android:id="@+id/ib_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/ib_cancle"
+            android:layout_marginEnd="13dp"
+            android:layout_toStartOf="@+id/ib_cancle"
+            android:background="@android:drawable/ic_media_pause"/>
+
+        <ImageButton
+            android:id="@+id/ib_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/ib_start"
+            android:layout_marginEnd="16dp"
+            android:background="@android:drawable/ic_menu_close_clear_cancel"/>
+
+        <ProgressBar
+            android:id="@+id/pb_down"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+</LinearLayout>
