@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 import com.example.application.myapplication.R;
 import com.example.application.myapplication.activity.MainActivity;
 import com.example.application.myapplication.view.MarqueeTextView;
-import com.tencent.smtt.sdk.WebView;
 
 /**
  * Created by 89565 on 2018/3/6.

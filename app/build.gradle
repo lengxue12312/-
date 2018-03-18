@@ -32,6 +32,6 @@ dependencies {
     implementation project(':vitamio')
     implementation 'org.xutils:xutils:3.5.0'
     implementation 'org.jsoup:jsoup:1.9.2'
-    implementation files('libs/tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025.jar')
+//    implementation files('libs/tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025.jar')
     implementation 'cn.jzvd:jiaozivideoplayer:6.2.8'
 }
