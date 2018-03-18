@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import com.example.application.myapplication.adapter.NetVideoAdapter;
 import com.example.application.myapplication.domain.NetVideoBean;
@@ -18,27 +22,44 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import cn.jzvd.JZVideoPlayerStandard;
+
 /**
  * 网络音乐页面
  */
 
 public class NetAudioPager extends BasePager {
     private static final String TAG = "NetAudioPager";
+    private static final int REFSHPROSSE = 2;
+    private static final int PROSSE = 1;
     private NetVideoBean netVideoBean;
     private ArrayList<NetVideoBean> netVideoBeans;
     private String url;
-
+    private boolean isRefsh = false;
     private NetVideoAdapter netVideoAdapter;
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            rv_audio.setLayoutManager(linearLayoutManager);
-            netVideoAdapter = new NetVideoAdapter(netVideoBeans, mContext);
-            rv_audio.setAdapter(netVideoAdapter);
+            switch (msg.what) {
+                case REFSHPROSSE:
+                    netVideoAdapter.notifyDataSetChanged();
+                    rv_audio.smoothScrollToPosition(0);
+                    sr_refresh.setRefreshing(false);
+                    isRefsh = false;
+                    break;
+                case PROSSE:
+                    rv_audio.setLayoutManager(linearLayoutManager);
+                    netVideoAdapter = new NetVideoAdapter(netVideoBeans, mContext);
+                    rv_audio.setAdapter(netVideoAdapter);
+                    break;
+            }
+
         }
     };
     private LinearLayoutManager linearLayoutManager;
+
+
 
     public NetAudioPager(Activity activity, Context context) {
         super(activity, context);
@@ -51,14 +72,47 @@ public class NetAudioPager extends BasePager {
         netVideoBeans = new ArrayList<>();
         linearLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         url = "http://m.kuwo.cn/newh5/mv/list?id=236682731";
-        prossecHtml();
+        prossecHtml(isRefsh);
+        sr_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                isRefsh = true;
+                prossecHtml(isRefsh);
+            }
+        });
+        rv_audio.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
+                int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+//                recyclerView.getChildAdapterPosition()
+                int itemCount = recyclerView.getAdapter().getItemCount();
+                for (int i = 0; i < itemCount; i++) {
+                    View childView = recyclerView.getChildAt(i);
+                    int childAdapterPosition = recyclerView.getChildAdapterPosition(childView);
+                    if (childAdapterPosition < firstVisibleItemPosition || childAdapterPosition > lastVisibleItemPosition) {
+//                            NetVideoAdapter.ViewHolder viewHolder = new NetVideoAdapter.ViewHolder(childView);
+//                            JZVideoPlayerStandard jz_video = viewHolder.getJz_video();
+                        JZVideoPlayerStandard.releaseAllVideos();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
 
-    private void prossecHtml() {
+    private void prossecHtml(final boolean isRefsh) {
         new Thread() {
             @Override
             public void run() {
+                Message msg = new Message();
                 try {
                     Document document = Jsoup.connect(url).get();
 //                    Elements ul = document.getElementsByTag("li");
@@ -83,9 +137,19 @@ public class NetAudioPager extends BasePager {
                             netVideoBean.setTitle(text);
                         }
 //                        Log.i(TAG, "run: "+select);
-                        netVideoBeans.add(netVideoBean);
+                        if (isRefsh) {
+                            if (!TextUtils.isEmpty(netVideoBean.getUrl()) && !TextUtils.isEmpty(netVideoBean.getTitle())) {
+                                msg.what = REFSHPROSSE;
+                                netVideoBeans.add(0, netVideoBean);
+                            }
+                        } else {
+                            if (!TextUtils.isEmpty(netVideoBean.getUrl())&&!TextUtils.isEmpty(netVideoBean.getTitle())) {
+                                msg.what = PROSSE;
+                                netVideoBeans.add(netVideoBean);
+                            }
+                        }
                     }
-                    mHandler.sendEmptyMessage(10);
+                    mHandler.sendMessage(msg);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
